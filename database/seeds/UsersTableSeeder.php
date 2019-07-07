@@ -23,6 +23,24 @@ class UsersTableSeeder extends Seeder
             'https://cdn.learnku.com/uploads/images/201710/14/1/xAuDMxteQy.png',
             'https://cdn.learnku.com/uploads/images/201710/14/1/ZqM7iaP4CR.png',
             'https://cdn.learnku.com/uploads/images/201710/14/1/NDnzMutoxX.png',
+
+            // 中世纪怪物头像
+            'https://s2.ax1x.com/2019/05/05/E0TbtK.png',
+            'https://s2.ax1x.com/2019/05/05/E0TqfO.png',
+            'https://s2.ax1x.com/2019/05/05/E0TX1e.png',
+            'https://s2.ax1x.com/2019/05/05/E0TznA.png',
+            'https://s2.ax1x.com/2019/05/05/E0THk6.png',
+            'https://s2.ax1x.com/2019/05/05/E0TOpD.png',
+            'https://s2.ax1x.com/2019/05/05/E0Tj6H.png',
+            'https://s2.ax1x.com/2019/05/05/E07S0I.png',
+            'https://s2.ax1x.com/2019/05/05/E07p7t.png',
+
+            //  花丸幼稚园头像
+            'https://s2.ax1x.com/2019/05/05/E04lVK.md.jpg',
+            'https://s2.ax1x.com/2019/05/05/E041UO.md.jpg',
+            'https://s2.ax1x.com/2019/05/05/E04uK1.jpg',
+            'https://s2.ax1x.com/2019/05/05/E04KDx.md.jpg',
+
         ];
 
         // 生成数据集合
