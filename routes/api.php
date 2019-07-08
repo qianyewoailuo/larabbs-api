@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| API Routes API路由
 |--------------------------------------------------------------------------
 |
 | Here is where you can register API routes for your application. These
@@ -42,4 +42,8 @@ $api->version('v1',[
     // 短信验证码
     $api->post('verificationCodes', 'VerificationCodesController@store')
         ->name('api.verificationCodes.store');
+
+    // 手机用户注册
+    $api->post('users','UsersController@store')
+        ->name('api.users.store');
 });

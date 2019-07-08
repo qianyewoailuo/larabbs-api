@@ -18,8 +18,9 @@ class VerificationCodesController extends Controller
         // ]);
         $phone = $request->phone;
 
-        // 生成4位随机数
-        $code = mt_rand(1000, 9999);
+        // 生成4位随机数并强制转换为字符串
+        // 因为之后的 hash_equals() 防时序攻击字符串比较方法需要的参数时 string
+        $code = (string)mt_rand(1000, 9999);
 
         // 发送验证码短信
         try {
