@@ -18,9 +18,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// 第一个 dingo/api 测试 - version测试选择
+
 $api = app(Dingo\Api\Routing\Router::class);
 
+// 第一个 dingo/api 测试 - version测试选择
 $api->version('v1',function($api){
     $api->get('version',function(){
         return response('this is version v1 response');
@@ -31,4 +32,14 @@ $api->version('v2',function($api){
     $api->get('version',function(){
         return response('this is version v2 response');
     });
+});
+
+// 发送短信验证码 API
+$api->version('v1',[
+    // namespace 参数使 v1 版本的路由都会指向 App\Http\Controllers\Api
+    'namespace' => 'App\Http\Controllers\Api'
+],function($api){
+    // 短信验证码
+    $api->post('verificationCodes', 'VerificationCodesController@store')
+        ->name('api.verificationCodes.store');
 });
