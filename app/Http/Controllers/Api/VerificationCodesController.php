@@ -16,11 +16,30 @@ class VerificationCodesController extends Controller
         // return $this->response->array([
         //     'test_message' => 'store verification code'
         // ]);
-        $phone = $request->phone;
+
+        // 图片验证码集成到短信验证中
+        // 获取图片验证码缓存信息, 其中包含 phone与code 信息
+        $captchaData = Cache::get($request->captcha_key);
+
+        if (!$captchaData) {
+            // 如果图片验证码相关缓存不存在,则表示已过期
+            // 422 Unprocessable Entity - 用来表示校验错误
+            $this->response->error('图片验证码已过期', 422);
+        }
+
+        if (!hash_equals($captchaData['code'], $request->captcha_code)) {
+            // 图片验证码不一致,先清空图片验证码缓存
+            Cache::forget($request->captcha_key);
+            // 然后发送 401 认证错误提示
+            return $this->response->errorUnauthorized('验证码错误');
+        }
+
+        // 开始手机验证码发送逻辑
+        $phone = $captchaData['phone'];
 
         // 生成4位随机数并强制转换为字符串
         // 因为之后的 hash_equals() 防时序攻击字符串比较方法需要的参数时 string
-        $code = (string)mt_rand(1000, 9999);
+        $code = (string) mt_rand(1000, 9999);
 
         // 发送验证码短信
         try {
