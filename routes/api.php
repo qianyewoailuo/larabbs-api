@@ -39,11 +39,17 @@ $api->version('v1',[
     // namespace 参数使 v1 版本的路由都会指向 App\Http\Controllers\Api
     'namespace' => 'App\Http\Controllers\Api'
 ],function($api){
-    // 短信验证码
-    $api->post('verificationCodes', 'VerificationCodesController@store')
-        ->name('api.verificationCodes.store');
+    $api->group([
+        'middleware' => 'api.throttle', // From:dingo\api\src\Ratelimit\Throttle\throttle.php
+        'limit'      => config('api.rate_limits.sign.limit'),
+        'expires'    => config('api.rate_limits.sign.expires'),
+    ],function($api){
+        // 短信验证码
+        $api->post('verificationCodes', 'VerificationCodesController@store')
+            ->name('api.verificationCodes.store');
 
-    // 手机用户注册
-    $api->post('users','UsersController@store')
-        ->name('api.users.store');
+        // 手机用户注册
+        $api->post('users', 'UsersController@store')
+            ->name('api.users.store');
+    });
 });
