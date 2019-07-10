@@ -19,12 +19,12 @@ use App\Models\Traits\LastActivedAtHelper;
 class User extends Authenticatable implements MustVerifyEmailContract
 {
     use MustVerifyEmailTrait;
-    use ActiveUserHelper,LastActivedAtHelper;
+    use ActiveUserHelper, LastActivedAtHelper;
     use HasRoles;
 
     use Notifiable {
-        // 将 trait 中的 notify 方法当做为 laravelNotify 引用
-        notify as protected laravelNotify;
+    // 将 trait 中的 notify 方法当做为 laravelNotify 引用
+    notify as protected laravelNotify;
     }
 
     // 重写 trait 中的notify方法
@@ -61,7 +61,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
      * @var array
      */
     protected $fillable = [
-        'name','phone','email', 'password','avatar','introduction'
+        'name', 'phone', 'email', 'password', 'weixin_openid', 'weixin_unionid', 'avatar', 'introduction'
     ];
 
     /**
@@ -85,7 +85,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
     // 使用 属性修改器 为后台修改密码时进行加密处理
     public function setPasswordAttribute($value)
     {
-        if(strlen($value) != 60){
+        if (strlen($value) != 60) {
             // 不是60位字符串的密码参数则做加密处理
             $value = Hash::make($value);
         }
@@ -97,8 +97,8 @@ class User extends Authenticatable implements MustVerifyEmailContract
     public function setAvatarAttribute($value)
     {
         // 如果不是 `http` 子串开头，那就是从后台上传的，需要补全 URL
-        if(! starts_with($value,'http')){
-            $value = config('app.url')."/uploads/images/avatar/$value";
+        if (!starts_with($value, 'http')) {
+            $value = config('app.url') . "/uploads/images/avatar/$value";
         }
 
         $this->attributes['avatar'] = $value;
