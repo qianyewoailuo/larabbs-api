@@ -72,7 +72,7 @@ class AuthorizationsController extends Controller
         // 获取 jwt token
         $token = \Auth::guard('api')->fromUser($user);
          // 使用 jwt 返回响应
-        $this->respondWithToken($token);
+        return $this->respondWithToken($token);
     }
 
     /**
@@ -100,7 +100,7 @@ class AuthorizationsController extends Controller
         //     'token_type' => 'Bearer',
         //     'expires_in' => \Auth::guard('api')->factory()->getTTL() * 60
         // ])->setStatusCode(201);
-        $this->respondWithToken($token);
+        return $this->respondWithToken($token);
     }
 
     /**
@@ -112,6 +112,28 @@ class AuthorizationsController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer',
             'expires_in' => \Auth::guard('api')->factory()->getTTL() * 60
-        ])->setStatusCode(201);
+        ]);
+    }
+
+    /**
+     * 刷新 JWT token
+     */
+    public function update()
+    {
+        // $token = \Auth::guard('api')->refresh();
+        $token = auth('api')->refresh();
+        return $this->respondWithToken($token);
+    }
+
+
+     /**
+      * 删除 JWT token
+      */
+    public function destroy()
+    {
+        // $token = \Auth::guard('api')->logout();
+        $token = auth('api')->logout();
+        // 204 No Content - 对不会返回响应体的成功请求进行响应（比如 DELETE 请求）
+        return $this->response->noContent();
     }
 }
