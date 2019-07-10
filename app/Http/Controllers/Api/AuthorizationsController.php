@@ -6,10 +6,14 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Requests\Api\SocialAuthorizationRequest;
 use Laravel\Socialite\Facades\Socialite;
+use App\Http\Requests\Api\AuthorizationRequest;
 
 class AuthorizationsController extends Controller
 {
 
+    /**
+     * 第三方登录
+     */
     public function socialStore($type, SocialAuthorizationRequest $request)
     {
         // 如果社交登录类型在数组中(当前数组只有weixin)
@@ -64,6 +68,50 @@ class AuthorizationsController extends Controller
         }
 
         // 返回创建成功的用户ID信息
-        return $this->response->array(['token' => $user->id]);
+        // return $this->response->array(['token' => $user->id]);
+        // 获取 jwt token
+        $token = \Auth::guard('api')->fromUser($user);
+         // 使用 jwt 返回响应
+        $this->respondWithToken($token);
+    }
+
+    /**
+     * 普通登录
+     * jwt 文档参考 : https://jwt-auth.readthedocs.io/en/develop/quick-start/
+     */
+    public function store(AuthorizationRequest $request)
+    {
+        $username = $request->username;
+
+        // 过滤判断用户登录使用的是邮箱还是手机
+        filter_var($username, FILTER_VALIDATE_EMAIL) ?
+            $credentials['email'] = $username : $credentials['phone'] = $username;
+
+        $credentials['password'] = $request->password;
+
+        // 获取 jwt token
+        if (!$token = \Auth::guard('api')->attempt($credentials)) {
+            return $this->response->errorUnauthorized('用户名或密码错误');
+        }
+
+        // 正确获取后返回响应 代码复用下面集成
+        // return $this->response->array([
+        //     'access_token' => $token,
+        //     'token_type' => 'Bearer',
+        //     'expires_in' => \Auth::guard('api')->factory()->getTTL() * 60
+        // ])->setStatusCode(201);
+        $this->respondWithToken($token);
+    }
+
+    /**
+     * 登录成功后使用 jwt 返回响应
+     */
+    protected function respondWithToken($token)
+    {
+        return $this->response->array([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'expires_in' => \Auth::guard('api')->factory()->getTTL() * 60
+        ])->setStatusCode(201);
     }
 }

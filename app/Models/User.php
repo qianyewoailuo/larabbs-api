@@ -15,8 +15,9 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Traits\ActiveUserHelper;
 use App\Models\Traits\LastActivedAtHelper;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements MustVerifyEmailContract
+class User extends Authenticatable implements MustVerifyEmailContract,JWTSubject
 {
     use MustVerifyEmailTrait;
     use ActiveUserHelper, LastActivedAtHelper;
@@ -53,6 +54,27 @@ class User extends Authenticatable implements MustVerifyEmailContract
         $this->save();
         // 标志notification消息已读
         $this->unreadNotifications->markAsRead();
+    }
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     * 获取 JWT 中的 sub 内容, 这里就是我们的用户 ID
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     * 可额外在 JWT 载荷中增加的自定义内容, 这里不做增加,直接返回空数组
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 
     /**
